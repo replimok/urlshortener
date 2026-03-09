@@ -12,7 +12,6 @@ os.environ["ENVIRONMENT"] = "test"
 
 from src.main import app
 from src.database import Base, get_db
-from src.config import config
 
 
 
@@ -56,3 +55,28 @@ def test_redirect(client):
     redirect_response = client.get(f"/{short_id}", follow_redirects=False)
     assert redirect_response.status_code == 307
     assert redirect_response.headers["location"] == original_url
+
+
+def test_get_stats(client):
+    original_url = "https://example.com/"
+    create_response = client.post("/shorten", json={"original_url": original_url})
+    short_id = create_response.json()["short_id"]
+
+    stats_response = client.get(f"/stats/{short_id}")
+    assert stats_response.status_code == 200
+    data = stats_response.json()
+    assert data["short_id"] == short_id
+    assert data["clicks"] == 0
+
+
+def test_clicks_incremented(client):
+    original_url = "https://example.com/"
+    create_response = client.post("/shorten", json={"original_url": original_url})
+    short_id = create_response.json()["short_id"]
+
+    client.get(f"/{short_id}")
+    client.get(f"/{short_id}")
+    client.get(f"/{short_id}")
+
+    stats_response = client.get(f"/stats/{short_id}")
+    assert stats_response.json()["clicks"] == 3
