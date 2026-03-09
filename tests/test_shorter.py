@@ -37,9 +37,6 @@ def client():
     with TestClient(app) as test_client:
         yield test_client
     Base.metadata.drop_all(bind=engine)
-    #
-    if os.path.exists("test.db"):
-        os.remove("test.db")
 
 
 def test_create_short_id(client):
