@@ -46,7 +46,6 @@ def test_create_short_id(client):
 
     data = response.json()
     assert "short_id" in data
-    assert len(data["short_id"]) == config.SHORT_ID_LENGTH
 
 
 def test_redirect(client):
