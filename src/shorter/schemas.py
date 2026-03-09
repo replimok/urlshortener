@@ -14,5 +14,5 @@ class URLStats(URLBase):
     short_id: str
     clicks: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

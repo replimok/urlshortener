@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from src.database import engine
 from src.shorter import (
     models as shorter_models,
@@ -8,5 +8,9 @@ from src.shorter import (
 shorter_models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="URL Shortener")
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
 
 app.include_router(shorter_router.router)
